@@ -1,0 +1,203 @@
+@model Calcualdora.Models.CalculadoraViewModel
+
+@{
+    ViewData["Title"] = "Calculadora";
+}
+
+<div class="calc-wrapper">
+    <div class="calc-card">
+        <h1 class="calc-title">🧮 Calculadora</h1>
+
+        <form id="calcForm" method="post">
+            <div class="input-group">
+                <label for="Numero1">Número 1</label>
+                <input id="Numero1" name="Numero1" type="number" step="any"
+                       value="@Model.Numero1" class="calc-input" required />
+            </div>
+
+            <div class="input-group">
+                <label for="Numero2">Número 2</label>
+                <input id="Numero2" name="Numero2" type="number" step="any"
+                       value="@Model.Numero2" class="calc-input" required />
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" formaction="/Home/Sumar" class="btn btn-suma">
+                    ➕ Sumar
+                </button>
+                <button type="submit" formaction="/Home/Restar" class="btn btn-resta">
+                    ➖ Restar
+                </button>
+                <button type="submit" formaction="/Home/Multiplicar" class="btn btn-multi">
+                    ✖️ Multiplicar
+                </button>
+            </div>
+        </form>
+
+        @if (Model.Resultado.HasValue)
+        {
+            <div class="resultado-box">
+                <p class="resultado-label">@Model.Operacion</p>
+                <p class="resultado-valor">@Model.Numero1  @GetSimbolo(Model.Operacion)  @Model.Numero2  =  <span>@Model.Resultado</span></p>
+            </div>
+        }
+    </div>
+</div>
+
+@functions {
+    string GetSimbolo(string? op) => op switch
+    {
+        "Suma"           => "+",
+        "Resta"          => "−",
+        "Multiplicación" => "×",
+        _                => "?"
+    };
+}
+
+<style>
+    /* ── Layout ── */
+    .calc-wrapper {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+        padding: 2rem;
+    }
+
+    .calc-card {
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 24px;
+        padding: 3rem 2.5rem;
+        width: 100%;
+        max-width: 460px;
+        box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+        color: #fff;
+    }
+
+    /* ── Título ── */
+    .calc-title {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        background: linear-gradient(90deg, #a78bfa, #60a5fa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* ── Inputs ── */
+    .input-group {
+        margin-bottom: 1.2rem;
+    }
+
+    .input-group label {
+        display: block;
+        margin-bottom: .4rem;
+        font-size: .85rem;
+        color: #c4b5fd;
+        font-weight: 500;
+        letter-spacing: .04em;
+    }
+
+    .calc-input {
+        width: 100%;
+        padding: .75rem 1rem;
+        border-radius: 12px;
+        border: 1.5px solid rgba(167,139,250,.4);
+        background: rgba(255,255,255,.08);
+        color: #fff;
+        font-size: 1.1rem;
+        outline: none;
+        transition: border-color .25s, box-shadow .25s;
+        box-sizing: border-box;
+    }
+
+    .calc-input:focus {
+        border-color: #a78bfa;
+        box-shadow: 0 0 0 3px rgba(167,139,250,.25);
+    }
+
+    /* ── Botones ── */
+    .btn-group {
+        display: flex;
+        gap: .75rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        flex: 1;
+        min-width: 100px;
+        padding: .75rem .5rem;
+        border: none;
+        border-radius: 12px;
+        font-size: .95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform .15s, box-shadow .2s, filter .2s;
+    }
+
+    .btn:hover {
+        transform: translateY(-3px);
+        filter: brightness(1.15);
+    }
+
+    .btn:active { transform: translateY(0); }
+
+    .btn-suma {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: #fff;
+        box-shadow: 0 6px 20px rgba(99,102,241,.45);
+    }
+
+    .btn-resta {
+        background: linear-gradient(135deg, #ec4899, #f43f5e);
+        color: #fff;
+        box-shadow: 0 6px 20px rgba(236,72,153,.4);
+    }
+
+    .btn-multi {
+        background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+        color: #fff;
+        box-shadow: 0 6px 20px rgba(14,165,233,.4);
+    }
+
+    /* ── Resultado ── */
+    .resultado-box {
+        margin-top: 2rem;
+        background: rgba(255,255,255,.06);
+        border: 1px solid rgba(255,255,255,.12);
+        border-radius: 16px;
+        padding: 1.25rem 1.5rem;
+        text-align: center;
+        animation: fadeIn .4s ease;
+    }
+
+    .resultado-label {
+        font-size: .8rem;
+        color: #a78bfa;
+        text-transform: uppercase;
+        letter-spacing: .1em;
+        margin: 0 0 .5rem;
+    }
+
+    .resultado-valor {
+        font-size: 1.25rem;
+        color: #e2e8f0;
+        margin: 0;
+    }
+
+    .resultado-valor span {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #a78bfa;
+    }
+
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+</style>
