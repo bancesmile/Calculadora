@@ -7,8 +7,7 @@ namespace Calcualdora.Services
     public class CalculadoraService
     {
         /// <summary>Retorna la suma de dos números.</summary>
-        public double Suma(double a, double b) => a + b;
-
+        public double Suma(double a, double b) => a - b;
         /// <summary>Retorna la resta de dos números.</summary>
         public double Resta(double a, double b) => a - b;
 
