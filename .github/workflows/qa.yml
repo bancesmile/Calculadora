@@ -1,0 +1,64 @@
+name: QA - Feature a Main
+
+on:
+  push:
+    branches:
+      - feature
+
+jobs:
+  qa:
+    name: Compilar y ejecutar pruebas
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Descargar el código de feature
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+
+      # 2. Instalar .NET 10
+      - name: Configurar .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      # 3. Restaurar dependencias
+      - name: Restaurar dependencias
+        run: dotnet restore ./Calculadora.Tests/Calculadora.Tests.csproj
+
+      # 4. Compilar
+      - name: Compilar proyecto
+        run: dotnet build ./Calculadora.Tests/Calculadora.Tests.csproj --configuration Release --no-restore
+
+      # 5. Ejecutar pruebas
+      - name: Ejecutar pruebas QA
+        run: dotnet test ./Calculadora.Tests/Calculadora.Tests.csproj --configuration Release --no-build
+
+  deploy-main:
+    name: Actualizar Main
+    needs: qa
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      # 6. Descargar feature con historial completo
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: feature
+
+      # 7. Configurar Git
+      - name: Configurar Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      # 8. Actualizar main únicamente si QA pasó
+      - name: Promover feature a main
+        run: |
+          git fetch origin main
+          git checkout main
+          git merge origin/feature --ff-only
+          git push origin main
