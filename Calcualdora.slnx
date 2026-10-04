@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="Calcualdora/Calcualdora.csproj" />
+  <Project Path="Calculadora.Tests/Calculadora.Tests.csproj" Id="2b28ef61-952a-4277-b4af-fbc523ffefbd" />
 </Solution>
