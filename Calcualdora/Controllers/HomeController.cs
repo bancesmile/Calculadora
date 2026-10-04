@@ -2,7 +2,7 @@ using Calcualdora.Models;
 using Calcualdora.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-
+// Prueba QA automatizada - flujo correcto
 namespace Calcualdora.Controllers
 {
     public class HomeController : Controller
