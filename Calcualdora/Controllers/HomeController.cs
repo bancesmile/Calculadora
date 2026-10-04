@@ -30,9 +30,9 @@ namespace Calcualdora.Controllers
         // ─── Función de Suma ──────────────────────────────────────────────────
         [HttpPost]
         public IActionResult Sumar(CalculadoraViewModel model)
-        {
+        {adfadfadfafd
             model.Resultado = _calculadora.Suma(model.Numero1, model.Numero2);
-            model.Operacion = "Suma";
+            model.Opadfadfadsfaseracion = "adfadfaSuma";
             return View("Calculadora", model);
         }
 
