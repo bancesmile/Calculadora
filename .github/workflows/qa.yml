@@ -1,0 +1,94 @@
+name: QA - Develop a Feature a Main
+
+on:
+  push:
+    branches:
+      - develop
+
+permissions:
+  contents: write
+
+jobs:
+
+  # ==========================================================
+  # 1. ACTUALIZAR FEATURE DESDE DEVELOP
+  # ==========================================================
+  actualizar-feature:
+    name: Actualizar Feature
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: develop
+
+      - name: Configurar Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Actualizar feature desde develop
+        run: |
+          git fetch origin
+          git checkout feature
+          git merge origin/develop --ff-only
+          git push origin feature
+
+
+  # ==========================================================
+  # 2. QA AUTOMATICO SOBRE FEATURE
+  # ==========================================================
+  qa:
+    name: Compilar y ejecutar pruebas
+    needs: actualizar-feature
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar codigo de feature
+        uses: actions/checkout@v4
+        with:
+          ref: feature
+
+      - name: Configurar .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restaurar dependencias
+        run: dotnet restore ./Calculadora.Tests/Calculadora.Tests.csproj
+
+      - name: Compilar proyecto
+        run: dotnet build ./Calculadora.Tests/Calculadora.Tests.csproj --configuration Release --no-restore
+
+      - name: Ejecutar pruebas QA
+        run: dotnet test ./Calculadora.Tests/Calculadora.Tests.csproj --configuration Release --no-build
+
+
+  # ==========================================================
+  # 3. ACTUALIZAR MAIN SOLO SI QA FUE CORRECTO
+  # ==========================================================
+  deploy-main:
+    name: Actualizar Main
+    needs: qa
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: feature
+
+      - name: Configurar Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Promover feature a main
+        run: |
+          git fetch origin
+          git checkout main
+          git merge origin/feature --ff-only
+          git push origin main
