@@ -24,7 +24,7 @@ namespace Calcualdora.Controllers
         // ─── Calculadora: muestra formulario vacío ────────────────────────────
         public IActionResult Calculadora()
         {
-            return Viedddw(new CalculadoraViewModel());
+            return View(new CalculadoraViewModel());
         }
 
         // ─── Función de Suma ──────────────────────────────────────────────────
